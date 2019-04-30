@@ -1,4 +1,29 @@
 #lang racket
+
+(define (map proc items)
+  (if (null? items)
+      '()
+      (cons (proc (car items))
+            (map proc (cdr items)))))
+
+(define (filter predicate items)
+  (cond ((null? items) '())
+        ((predicate (car items))
+         (cons (car items)
+               (filter predicate (cdr items))))
+        (else (filter predicate (cdr items)))))
+
+(define (accumulate op initial items)
+  (if (null? items)
+      initial
+      (op (car items)
+          (accumulate op initial (cdr items)))))
+
+(define (enumerate-interval low high)
+  (if (> low high)
+      '()
+      (cons low (enumerate-interval (+ low 1) high))))
+
 #! sicp 2.30
 
 (define (square-tree list1)
@@ -48,3 +73,19 @@
 
 (define set1 '(1 2 3))
 (subsets set1)
+
+#! sicp 2.33
+(define (new-map p items)
+  (accumulate (lambda (x y) (cons (p x) y)) '() items))
+
+(new-map (lambda (x) (* x x)) (list 1 2 3 5))
+
+(define (new-append seq1 seq2)
+  (accumulate cons seq2 seq1))
+
+(new-append (list 1 3 5) (list 3 6 9))
+
+(define (new-length seq)
+  (accumulate (lambda (x y) (+ 1 y)) 0 seq))
+
+(new-length '(1 3 5 6 7))
