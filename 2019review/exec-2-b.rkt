@@ -89,3 +89,29 @@
   (accumulate (lambda (x y) (+ 1 y)) 0 seq))
 
 (new-length '(1 3 5 6 7))
+
+#! sicp 2.34
+(define (horner-eval x coefficient-sequence)
+  (accumulate (lambda (this-coeff higher-terms) (+ this-coeff (* x higher-terms)))
+              0
+              coefficient-sequence))
+
+(horner-eval 2 (list 1 3 0 5 0 1))
+
+#! sicp 2.35
+(define (count-leaves t)
+  (accumulate + 0 (map (lambda (l) (if (pair? l)
+                                       (count-leaves l)
+                                       1)) t)))
+
+
+(count-leaves '(((1 2) 3 4) ((1 2) 3 4)))
+
+#! sicp 2.36
+(define (accumulate-n op init seqs)
+  (if (null? (car seqs))
+      '()
+      (cons (accumulate op init (map car seqs))
+            (accumulate-n op init (map cdr seqs)))))
+
+(accumulate-n + 0 '((1 2 3) (4 5 6) (7 8 9) (10 11 12)))
